@@ -1,8 +1,7 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameSession } from "./App";
 
-function HomePage(): JSX.Element {
+function HomePage() {
   const navigate = useNavigate();
   const { createGameSession } = useGameSession();
 

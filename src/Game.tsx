@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useGameSession } from './App';
+import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useGameSession } from "./App";
 
-type DiceSymbol = 'SWORD' | 'BANG' | 'HEART';
+type DiceSymbol = "SWORD" | "BANG" | "HEART";
 
-interface DiceFace {
+export interface DiceFace {
   value: number;
   symbol: DiceSymbol;
 }
@@ -14,7 +14,7 @@ interface DiceResult {
   index: number;
 }
 
-function GamePage(): JSX.Element {
+function GamePage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { getGameSession } = useGameSession();
@@ -52,7 +52,7 @@ function GamePage(): JSX.Element {
     }, 500);
   };
 
-  const getSymbolIcon = (symbol: DiceSymbol): JSX.Element => {
+  const getSymbolIcon = (symbol: DiceSymbol)  => {
     switch (symbol) {
       case 'SWORD':
         return (

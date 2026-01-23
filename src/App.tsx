@@ -1,12 +1,25 @@
-import React, { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./Home";
 import GamePage from "./Game";
+
+export interface Hero {
+  name: string;
+  status: string;
+  rolls: number;
+  health: number;
+  dice: any;
+  selectedDice: any;
+  remainingDice: any;
+}
 
 export interface GameSession {
   id: number;
   turn: number;
   status: string;
+  bossName: string;
+  bossHealth: number;
+  hero: Hero;
 }
 
 interface GameSessionContextType {
@@ -25,7 +38,7 @@ export const useGameSession = () => {
   return context;
 };
 
-function App(): JSX.Element {
+function App() {
   const [gameSessions, setGameSessions] = useState<Record<number, GameSession>>({});
 
   const createGameSession = (id: number): GameSession => {
