@@ -77,7 +77,7 @@ function App() {
   };
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/dice-throne-solo">
       <GameSessionContext.Provider value={{ gameSessions, createGameSession, getGameSession }}>
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
           <Routes>
