@@ -151,38 +151,47 @@ function GamePage(): JSX.Element {
   const heroHealthPercentage = (gameSession.hero.health / 25) * 100;
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl shadow-2xl p-8 text-white">
+    <div className="w-full max-w-[1800px] mx-auto">
+      <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl shadow-2xl p-2 text-white">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8 pb-4 border-b border-slate-700">
+        <div className="flex justify-between items-center mb-2 pb-2 border-b border-slate-700">
           <div>
-            <h1 className="text-4xl font-bold mb-2">Battle Arena</h1>
-            <p className="text-slate-400">Turn {gameSession.turn} • Session #{gameSession.id}</p>
+            <h1 className="text-2xl font-bold">Battle Arena</h1>
           </div>
-          <div className="text-right">
-            <p className="text-sm text-slate-400">Status</p>
-            <p className="text-xl font-bold text-yellow-400">{gameSession.status}</p>
+          <div className="flex gap-6 text-sm">
+            <div>
+              <span className="text-slate-400">Turn:</span>
+              <span className="font-bold ml-1">{gameSession.turn}</span>
+            </div>
+            <div>
+              <span className="text-slate-400">Session:</span>
+              <span className="font-bold ml-1">#{gameSession.id}</span>
+            </div>
+            <div>
+              <span className="text-slate-400">Status:</span>
+              <span className="font-bold text-yellow-400 ml-1">{gameSession.status}</span>
+            </div>
           </div>
         </div>
 
         {/* Battle Display */}
-        <div className="grid grid-cols-2 gap-8 mb-8">
+        <div className="grid grid-cols-2 gap-4 mb-4">
           {/* Hero Card */}
-          <div className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-lg p-6 border-2 border-blue-500">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold">{gameSession.hero.name}</h2>
-              <span className="px-3 py-1 bg-blue-600 rounded-full text-sm font-semibold">
+          <div className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-lg p-4 border-2 border-blue-500">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-xl font-bold">{gameSession.hero.name}</h2>
+              <span className="px-2 py-1 bg-blue-600 rounded-full text-xs font-semibold">
                 HERO
               </span>
             </div>
             
-            <div className="space-y-3">
+            <div className="space-y-2">
               <div>
-                <div className="flex justify-between text-sm mb-1">
+                <div className="flex justify-between text-xs mb-1">
                   <span>Health</span>
                   <span className="font-bold">{gameSession.hero.health} / 25</span>
                 </div>
-                <div className="w-full bg-slate-700 rounded-full h-4 overflow-hidden">
+                <div className="w-full bg-slate-700 rounded-full h-3 overflow-hidden">
                   <div 
                     className="bg-gradient-to-r from-green-500 to-green-400 h-full transition-all duration-500"
                     style={{ width: `${heroHealthPercentage}%` }}
@@ -190,13 +199,13 @@ function GamePage(): JSX.Element {
                 </div>
               </div>
 
-              <div className="flex justify-between items-center pt-2">
-                <span className="text-sm text-slate-300">Rolls Available</span>
+              <div className="flex justify-between items-center pt-1">
+                <span className="text-xs text-slate-300">Rolls Available</span>
                 <div className="flex gap-1">
                   {[...Array(3)].map((_, i) => (
                     <div
                       key={i}
-                      className={`w-3 h-3 rounded-full ${
+                      className={`w-2 h-2 rounded-full ${
                         i < gameSession.hero.rolls ? 'bg-yellow-400' : 'bg-slate-600'
                       }`}
                     />
@@ -204,29 +213,29 @@ function GamePage(): JSX.Element {
                 </div>
               </div>
 
-              <div className="pt-2">
-                <span className="text-sm text-slate-300">Status: </span>
-                <span className="font-semibold text-blue-300">{gameSession.hero.status}</span>
+              <div className="pt-1">
+                <span className="text-xs text-slate-300">Status: </span>
+                <span className="font-semibold text-sm text-blue-300">{gameSession.hero.status}</span>
               </div>
             </div>
           </div>
 
           {/* Boss Card */}
-          <div className="bg-gradient-to-br from-red-900 to-red-800 rounded-lg p-6 border-2 border-red-500">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold">{gameSession.bossName}</h2>
-              <span className="px-3 py-1 bg-red-600 rounded-full text-sm font-semibold">
+          <div className="bg-gradient-to-br from-red-900 to-red-800 rounded-lg p-4 border-2 border-red-500">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-xl font-bold">{gameSession.bossName}</h2>
+              <span className="px-2 py-1 bg-red-600 rounded-full text-xs font-semibold">
                 BOSS
               </span>
             </div>
             
-            <div className="space-y-3">
+            <div className="space-y-2">
               <div>
-                <div className="flex justify-between text-sm mb-1">
+                <div className="flex justify-between text-xs mb-1">
                   <span>Health</span>
                   <span className="font-bold">{gameSession.bossHealth} / 50</span>
                 </div>
-                <div className="w-full bg-slate-700 rounded-full h-4 overflow-hidden">
+                <div className="w-full bg-slate-700 rounded-full h-3 overflow-hidden">
                   <div 
                     className="bg-gradient-to-r from-red-500 to-red-400 h-full transition-all duration-500"
                     style={{ width: `${bossHealthPercentage}%` }}
@@ -239,7 +248,7 @@ function GamePage(): JSX.Element {
 
         {/* Dice Roll Area */}
         {diceResults.length > 0 && (
-          <div className="mb-8 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg p-6 border border-slate-700">
+          <div className="mb-4 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg p-4 border border-slate-700">
             <h3 className="text-xl font-bold mb-4 text-center">Dice Results</h3>
             <div className="flex justify-center gap-4 flex-wrap">
               {diceResults.map((result) => (
@@ -269,7 +278,7 @@ function GamePage(): JSX.Element {
             </div>
             
             {/* Dice Summary */}
-            <div className="mt-6 flex justify-center gap-8 text-sm bg-slate-900 rounded-lg p-4">
+            <div className="mt-4 flex justify-center gap-8 text-sm bg-slate-900 rounded-lg p-3">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 flex items-center justify-center">
                   <div className="text-white scale-75">
@@ -325,6 +334,15 @@ function GamePage(): JSX.Element {
           >
             {isRolling ? '🎲 Rolling...' : '🎲 Roll Dice'}
           </button>
+        </div>
+
+        {/* Reference Image */}
+        <div>
+          <img 
+            src="https://cdn.shopify.com/s/files/1/0045/4013/7562/t/9/assets/a716b64ef4a9--5.component-spread-barbarian-829552.png?v=1601922898"
+            alt="Barbarian dice reference"
+            className="w-full rounded-lg shadow-lg"
+          />
         </div>
       </div>
     </div>
