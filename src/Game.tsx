@@ -1,6 +1,18 @@
-import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useGameSession } from "./App";
+import React, { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useGameSession } from './App';
+
+type DiceSymbol = 'SWORD' | 'BANG' | 'HEART';
+
+interface DiceFace {
+  value: number;
+  symbol: DiceSymbol;
+}
+
+interface DiceResult {
+  face: DiceFace;
+  index: number;
+}
 
 function GamePage(): JSX.Element {
   const { id } = useParams<{ id: string }>();
@@ -8,9 +20,110 @@ function GamePage(): JSX.Element {
   const { getGameSession } = useGameSession();
 
   const gameSession = id ? getGameSession(parseInt(id)) : undefined;
+  const [diceResults, setDiceResults] = useState<DiceResult[]>([]);
+  const [isRolling, setIsRolling] = useState(false);
+
+  const diceFaces: DiceFace[] = [
+    { value: 1, symbol: "SWORD" },
+    { value: 2, symbol: "SWORD" },
+    { value: 3, symbol: "BANG" },
+    { value: 4, symbol: "HEART" },
+    { value: 5, symbol: "HEART" },
+    { value: 6, symbol: "BANG" }
+  ];
+
+  const rollDice = (): void => {
+    setIsRolling(true);
+    
+    // Roll 5 dice
+    const results: DiceResult[] = [];
+    for (let i = 0; i < 5; i++) {
+      const randomIndex = Math.floor(Math.random() * 6);
+      results.push({
+        face: diceFaces[randomIndex],
+        index: i
+      });
+    }
+    
+    // Simulate rolling animation
+    setTimeout(() => {
+      setDiceResults(results);
+      setIsRolling(false);
+    }, 500);
+  };
+
+  const getSymbolIcon = (symbol: DiceSymbol): JSX.Element => {
+    switch (symbol) {
+      case 'SWORD':
+        return (
+          <svg viewBox="0 0 100 100" className="w-12 h-12">
+            <g transform="rotate(-45 50 50)">
+              {/* Blade */}
+              <rect x="45" y="10" width="10" height="50" fill="currentColor" />
+              <polygon points="50,5 55,10 45,10" fill="currentColor" />
+              {/* Guard */}
+              <rect x="35" y="60" width="30" height="5" fill="currentColor" />
+              {/* Handle */}
+              <rect x="47" y="65" width="6" height="20" fill="currentColor" />
+              {/* Pommel */}
+              <circle cx="50" cy="88" r="5" fill="currentColor" />
+            </g>
+          </svg>
+        );
+      case 'BANG':
+        return (
+          <svg viewBox="0 0 100 100" className="w-12 h-12">
+            <circle cx="50" cy="50" r="20" fill="currentColor" />
+            <path
+              d="M50 15 L55 35 M50 85 L55 65 M15 50 L35 45 M85 50 L65 55 M25 25 L40 40 M75 75 L60 60 M75 25 L60 40 M25 75 L40 60"
+              stroke="currentColor"
+              strokeWidth="6"
+              strokeLinecap="round"
+            />
+          </svg>
+        );
+      case 'HEART':
+        return (
+          <svg viewBox="0 0 100 100" className="w-12 h-12">
+            <path
+              d="M50 85 C25 65, 10 50, 10 35 C10 20, 20 10, 32 10 C40 10, 47 15, 50 22 C53 15, 60 10, 68 10 C80 10, 90 20, 90 35 C90 50, 75 65, 50 85 Z"
+              fill="currentColor"
+            />
+          </svg>
+        );
+      default:
+        return <span>?</span>;
+    }
+  };
+
+  const getSymbolColor = (symbol: DiceSymbol): string => {
+    switch (symbol) {
+      case 'SWORD':
+        return 'text-white';
+      case 'BANG':
+        return 'text-yellow-400';
+      case 'HEART':
+        return 'text-red-300';
+      default:
+        return 'text-gray-400';
+    }
+  };
+
+  const getValueColor = (symbol: DiceSymbol): string => {
+    switch (symbol) {
+      case 'SWORD':
+        return 'text-white';
+      case 'BANG':
+        return 'text-yellow-400';
+      case 'HEART':
+        return 'text-red-300';
+      default:
+        return 'text-gray-400';
+    }
+  };
 
   const handleBackHome = (): void => {
-    navigate("/");
+    navigate('/');
   };
 
   if (!gameSession) {
@@ -34,13 +147,16 @@ function GamePage(): JSX.Element {
     );
   }
 
+  const bossHealthPercentage = (gameSession.bossHealth / 50) * 100;
+  const heroHealthPercentage = (gameSession.hero.health / 25) * 100;
+
   return (
     <div className="max-w-4xl mx-auto">
       <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl shadow-2xl p-8 text-white">
         {/* Header */}
         <div className="flex justify-between items-center mb-8 pb-4 border-b border-slate-700">
           <div>
-            <h1 className="text-4xl font-bold mb-2">Dice Throne</h1>
+            <h1 className="text-4xl font-bold mb-2">Battle Arena</h1>
             <p className="text-slate-400">Turn {gameSession.turn} • Session #{gameSession.id}</p>
           </div>
           <div className="text-right">
@@ -64,7 +180,13 @@ function GamePage(): JSX.Element {
               <div>
                 <div className="flex justify-between text-sm mb-1">
                   <span>Health</span>
-                  <span className="font-bold">{gameSession.hero.health}</span>
+                  <span className="font-bold">{gameSession.hero.health} / 25</span>
+                </div>
+                <div className="w-full bg-slate-700 rounded-full h-4 overflow-hidden">
+                  <div 
+                    className="bg-gradient-to-r from-green-500 to-green-400 h-full transition-all duration-500"
+                    style={{ width: `${heroHealthPercentage}%` }}
+                  />
                 </div>
               </div>
 
@@ -102,12 +224,88 @@ function GamePage(): JSX.Element {
               <div>
                 <div className="flex justify-between text-sm mb-1">
                   <span>Health</span>
-                  <span className="font-bold">{gameSession.bossHealth}</span>
+                  <span className="font-bold">{gameSession.bossHealth} / 50</span>
+                </div>
+                <div className="w-full bg-slate-700 rounded-full h-4 overflow-hidden">
+                  <div 
+                    className="bg-gradient-to-r from-red-500 to-red-400 h-full transition-all duration-500"
+                    style={{ width: `${bossHealthPercentage}%` }}
+                  />
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Dice Roll Area */}
+        {diceResults.length > 0 && (
+          <div className="mb-8 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg p-6 border border-slate-700">
+            <h3 className="text-xl font-bold mb-4 text-center">Dice Results</h3>
+            <div className="flex justify-center gap-4 flex-wrap">
+              {diceResults.map((result) => (
+                <div
+                  key={result.index}
+                  className={`relative w-28 h-28 rounded-xl 
+                    shadow-lg
+                    transition-all duration-300 
+                    ${isRolling ? 'animate-spin' : 'hover:scale-105'}
+                    border-2 border-orange-900`}
+                  style={{
+                    backgroundColor: 'oklch(50.5% 0.213 27.518)',
+                    boxShadow: '0 8px 16px rgba(0,0,0,0.3), inset 0 -2px 8px rgba(0,0,0,0.1), inset 0 2px 8px rgba(255,255,255,0.1)'
+                  }}
+                >
+                  {/* Value in top left */}
+                  <div className={`absolute top-2 left-2 text-2xl font-bold ${getValueColor(result.face.symbol)}`}>
+                    {result.face.value}
+                  </div>
+                  
+                  {/* Symbol in bottom right */}
+                  <div className={`absolute bottom-1 right-1 ${getSymbolColor(result.face.symbol)} drop-shadow-md`}>
+                    {getSymbolIcon(result.face.symbol)}
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {/* Dice Summary */}
+            <div className="mt-6 flex justify-center gap-8 text-sm bg-slate-900 rounded-lg p-4">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 flex items-center justify-center">
+                  <div className="text-white scale-75">
+                    {getSymbolIcon('SWORD')}
+                  </div>
+                </div>
+                <span className="text-slate-400">Swords:</span>
+                <span className="font-bold text-white text-lg">
+                  {diceResults.filter(r => r.face.symbol === 'SWORD').length}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 flex items-center justify-center">
+                  <div className="text-yellow-400 scale-75">
+                    {getSymbolIcon('BANG')}
+                  </div>
+                </div>
+                <span className="text-slate-400">Bangs:</span>
+                <span className="font-bold text-yellow-400 text-lg">
+                  {diceResults.filter(r => r.face.symbol === 'BANG').length}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 flex items-center justify-center">
+                  <div className="text-red-300 scale-75">
+                    {getSymbolIcon('HEART')}
+                  </div>
+                </div>
+                <span className="text-slate-400">Hearts:</span>
+                <span className="font-bold text-red-300 text-lg">
+                  {diceResults.filter(r => r.face.symbol === 'HEART').length}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Actions */}
         <div className="flex gap-4">
@@ -118,9 +316,14 @@ function GamePage(): JSX.Element {
             ← Back to Home
           </button>
           <button
-            className="px-6 py-3 bg-green-600 hover:bg-green-500 rounded-lg font-semibold transition-colors duration-200 flex-1"
+            onClick={rollDice}
+            disabled={isRolling}
+            className={`px-6 py-3 rounded-lg font-semibold transition-colors duration-200 flex-1 
+              ${isRolling 
+                ? 'bg-gray-600 cursor-not-allowed' 
+                : 'bg-green-600 hover:bg-green-500'}`}
           >
-            Roll Dice
+            {isRolling ? '🎲 Rolling...' : '🎲 Roll Dice'}
           </button>
         </div>
       </div>
