@@ -1,7 +1,25 @@
-import { useState } from "react";
-import type { GameSession } from "../App";
+import { createContext, useContext, useState } from "react";
+import type { ReactNode } from "react";
+import type { GameSession } from "../types/GameSession";
 
-export function GameSessionState() {
+interface GameSessionContextType {
+  gameSessions: Record<number, GameSession>;
+  createGameSession: (id: number) => GameSession;
+  getGameSession: (id: number) => GameSession | undefined;
+  updateGameSession: (id: number, rolls: number) => void;
+}
+
+const GameSessionContext = createContext<GameSessionContextType | undefined>(undefined);
+
+export const useGameSession = () => {
+  const context = useContext(GameSessionContext);
+  if (!context) {
+    throw new Error("useGameSession must be used within GameSessionProvider");
+  }
+  return context;
+};
+
+export function GameSessionProvider({ children }: { children: ReactNode }) {
   const [gameSessions, setGameSessions] = useState<Record<number, GameSession>>({});
 
   const createGameSession = (id: number): GameSession => {
@@ -60,5 +78,17 @@ export function GameSessionState() {
     });
   };
 
-  return {createGameSession, getGameSession, updateGameSession};
+
+  const value = {
+    gameSessions,
+    createGameSession,
+    getGameSession,
+    updateGameSession
+  };
+
+  return (
+    <GameSessionContext.Provider value={value}>
+      {children}
+    </GameSessionContext.Provider>
+  );
 };

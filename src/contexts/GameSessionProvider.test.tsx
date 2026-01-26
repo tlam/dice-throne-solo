@@ -1,10 +1,15 @@
+import type { ReactNode } from "react";
 import { assert, test } from "vitest";
 import { renderHook } from "@testing-library/react";
-import { GameSessionState } from "./game-session-state";
+import { GameSessionProvider, useGameSession } from "./GameSessionProvider";
 import { act } from "react";
 
+const wrapper = ({ children }: { children: ReactNode}) => (
+  <GameSessionProvider>{children}</GameSessionProvider>
+);
+
 test("Create game session", async () => {
-  const { result } = renderHook(() => GameSessionState());
+  const { result } = renderHook(() => useGameSession(), { wrapper });
 
   act(() => {
     result.current.createGameSession(1);
@@ -15,7 +20,7 @@ test("Create game session", async () => {
 });
 
 test("Update rolls", async () => {
-  const { result } = renderHook(() => GameSessionState());
+  const { result } = renderHook(() => useGameSession(), { wrapper });
 
   act(() => {
     result.current.createGameSession(1);

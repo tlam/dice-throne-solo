@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useGameSession } from "./App";
+import { useGameSession } from "./contexts/GameSessionProvider";
 
 type DiceSymbol = "SWORD" | "BANG" | "HEART";
 

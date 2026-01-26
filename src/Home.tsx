@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useGameSession } from "./App";
+import { useGameSession } from "./contexts/GameSessionProvider";
 
 function HomePage() {
   const navigate = useNavigate();
