@@ -7,6 +7,7 @@ interface GameSessionContextType {
   createGameSession: (id: number) => GameSession;
   getGameSession: (id: number) => GameSession | undefined;
   updateGameSession: (id: number, rolls: number) => void;
+  updateRoll: (id: number) => void;
 }
 
 const GameSessionContext = createContext<GameSessionContextType | undefined>(undefined);
@@ -78,12 +79,50 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const updateRoll = (id: number) => {
+    setGameSessions(prevSessions => {
+      const session = prevSessions[id];
+
+      let rolls = 0;
+      let status = session.hero.status;
+      if (session.hero.rolls > 0) {
+        rolls = session.hero.rolls - 1;
+
+        if (rolls === 1) {
+          status = "THIRD_ROLL";
+        } else if (rolls === 2) {
+          status = "SECOND_ROLL";
+        } else if (rolls === 3) {
+          status = "FIRST_ROLL";
+        }
+      }
+
+      if (session) {
+        return {
+          ...prevSessions,
+          [id]: {
+            ...session,
+            hero: {
+              ...session.hero,
+              rolls,
+              status
+            }
+          }
+        }
+      }
+
+      return prevSessions;
+    });
+  };
+
+
 
   const value = {
     gameSessions,
     createGameSession,
     getGameSession,
-    updateGameSession
+    updateGameSession,
+    updateRoll
   };
 
   return (

@@ -19,7 +19,7 @@ test("Create game session", async () => {
   assert.equal(session?.hero.rolls, 3);
 });
 
-test("Update rolls", async () => {
+test("Update game session", async () => {
   const { result } = renderHook(() => useGameSession(), { wrapper });
 
   act(() => {
@@ -35,4 +35,23 @@ test("Update rolls", async () => {
 
   session = result.current.getGameSession(1);
   assert.equal(session?.hero.rolls, 2);
+});
+
+test("Update roll", async () => {
+  const { result } = renderHook(() => useGameSession(), { wrapper });
+
+  act(() => {
+    result.current.createGameSession(1);
+  });
+
+  let session = result.current.getGameSession(1);
+  assert.equal(session?.hero.rolls, 3);
+
+  act(() => {
+    result.current.updateRoll(1);
+  });
+
+  session = result.current.getGameSession(1);
+  assert.equal(session?.hero.rolls, 2);
+  assert.equal(session?.hero.status, "SECOND_ROLL");
 });

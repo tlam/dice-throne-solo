@@ -17,7 +17,7 @@ interface DiceResult {
 function GamePage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { getGameSession } = useGameSession();
+  const { getGameSession, updateRoll } = useGameSession();
 
   const gameSession = id ? getGameSession(parseInt(id)) : undefined;
   const [diceResults, setDiceResults] = useState<DiceResult[]>([]);
@@ -33,23 +33,27 @@ function GamePage() {
   ];
 
   const rollDice = (): void => {
-    setIsRolling(true);
+    if (gameSession && gameSession?.hero.rolls > 0) {
+      updateRoll(gameSession.id);
     
-    // Roll 5 dice
-    const results: DiceResult[] = [];
-    for (let i = 0; i < 5; i++) {
-      const randomIndex = Math.floor(Math.random() * 6);
-      results.push({
-        face: diceFaces[randomIndex],
-        index: i
-      });
+      setIsRolling(true);
+    
+      // Roll 5 dice
+      const results: DiceResult[] = [];
+      for (let i = 0; i < 5; i++) {
+        const randomIndex = Math.floor(Math.random() * 6);
+        results.push({
+          face: diceFaces[randomIndex],
+          index: i
+        });
+      }
+    
+      // Simulate rolling animation
+      setTimeout(() => {
+        setDiceResults(results);
+        setIsRolling(false);
+      }, 500);
     }
-    
-    // Simulate rolling animation
-    setTimeout(() => {
-      setDiceResults(results);
-      setIsRolling(false);
-    }, 500);
   };
 
   const getSymbolIcon = (symbol: DiceSymbol)  => {
