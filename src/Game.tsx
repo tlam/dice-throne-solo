@@ -35,20 +35,24 @@ function GamePage() {
     if (gameSession && gameSession?.hero.rolls > 0) {
       const diceFaces = gameSession.hero.dice;
       updateRoll(gameSession.id);
-    
+  
       setIsRolling(true);
-    
+  
       // Roll 5 dice (minus the selected dice)
       const numDiceToRoll = 5 - selectedDice.length;
       const results: DiceResult[] = [];
+    
+      // Use timestamp + index to ensure unique keys
+      const baseIndex = Date.now();
+    
       for (let i = 0; i < numDiceToRoll; i++) {
         const randomIndex = Math.floor(Math.random() * 6);
         results.push({
           face: diceFaces[randomIndex],
-          index: i
+          index: baseIndex + i  // ← Unique index
         });
       }
-    
+  
       // Simulate rolling animation
       setTimeout(() => {
         setDiceResults(results);
@@ -61,20 +65,23 @@ function GamePage() {
 
   const handleSelectedDice = (diceSelected: DiceResult): void => {
     if (gameSession && gameSession.hero.status !== "START") {
+      const newSelectedDice = [...selectedDice, diceSelected];
       setSelectedDice(prev => [...prev, diceSelected]);
       setDiceResults(prev => prev.filter(d => d.index !== diceSelected.index));
 
-      const faces = selectedDice.map(dice => dice.face);
+      const faces = newSelectedDice.map(dice => dice.face);
       updateGameSession(gameSession.id, faces);
     }
   };
 
   const handleUnkeepDice = (diceToUnkeep: DiceResult): void => {
-    if (gameSession && gameSession.hero.status !== "START") {    
-      setDiceResults(prev => [...prev, diceToUnkeep]);
-      setSelectedDice(prev => prev.filter(d => d.index !== diceToUnkeep.index));
+    if (gameSession && gameSession.hero.status !== "START") {  
+      const newSelectedDice = selectedDice.filter(d => d.index !== diceToUnkeep.index);
 
-      const faces = selectedDice.map(dice => dice.face);
+      setDiceResults(prev => [...prev, diceToUnkeep]);
+      setSelectedDice(newSelectedDice);
+
+      const faces = newSelectedDice.map(dice => dice.face);
       updateGameSession(gameSession.id, faces);    
     }
   };
