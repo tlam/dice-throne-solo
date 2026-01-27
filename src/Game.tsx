@@ -7,6 +7,7 @@ type DiceSymbol = "SWORD" | "BANG" | "HEART";
 export interface DiceFace {
   value: number;
   symbol: DiceSymbol;
+  textColor: string;
 }
 
 interface DiceResult {
@@ -17,23 +18,15 @@ interface DiceResult {
 function GamePage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { getGameSession, updateRoll } = useGameSession();
+  const { getGameSession, getHeroAction, updateRoll } = useGameSession();
 
   const gameSession = id ? getGameSession(parseInt(id)) : undefined;
   const [diceResults, setDiceResults] = useState<DiceResult[]>([]);
   const [isRolling, setIsRolling] = useState(false);
 
-  const diceFaces: DiceFace[] = [
-    { value: 1, symbol: "SWORD" },
-    { value: 2, symbol: "SWORD" },
-    { value: 3, symbol: "BANG" },
-    { value: 4, symbol: "HEART" },
-    { value: 5, symbol: "HEART" },
-    { value: 6, symbol: "BANG" }
-  ];
-
   const rollDice = (): void => {
     if (gameSession && gameSession?.hero.rolls > 0) {
+      const diceFaces = gameSession.hero.dice;
       updateRoll(gameSession.id);
     
       setIsRolling(true);
@@ -53,7 +46,16 @@ function GamePage() {
         setDiceResults(results);
         setIsRolling(false);
       }, 500);
+    } else {
+      setIsRolling(false);
     }
+  };
+
+  const resolve = (): void => {
+    if (gameSession) {
+      getHeroAction(gameSession.id);
+    }
+
   };
 
   const getSymbolIcon = (symbol: DiceSymbol)  => {
@@ -97,32 +99,6 @@ function GamePage() {
         );
       default:
         return <span>?</span>;
-    }
-  };
-
-  const getSymbolColor = (symbol: DiceSymbol): string => {
-    switch (symbol) {
-      case 'SWORD':
-        return 'text-white';
-      case 'BANG':
-        return 'text-yellow-400';
-      case 'HEART':
-        return 'text-red-300';
-      default:
-        return 'text-gray-400';
-    }
-  };
-
-  const getValueColor = (symbol: DiceSymbol): string => {
-    switch (symbol) {
-      case 'SWORD':
-        return 'text-white';
-      case 'BANG':
-        return 'text-yellow-400';
-      case 'HEART':
-        return 'text-red-300';
-      default:
-        return 'text-gray-400';
     }
   };
 
@@ -269,12 +245,12 @@ function GamePage() {
                   }}
                 >
                   {/* Value in top left */}
-                  <div className={`absolute top-2 left-2 text-2xl font-bold ${getValueColor(result.face.symbol)}`}>
+                  <div className={`absolute top-2 left-2 text-2xl font-bold ${result.face.textColor}`}>
                     {result.face.value}
                   </div>
                   
                   {/* Symbol in bottom right */}
-                  <div className={`absolute bottom-1 right-1 ${getSymbolColor(result.face.symbol)} drop-shadow-md`}>
+                  <div className={`absolute bottom-1 right-1 ${result.face.textColor} drop-shadow-md`}>
                     {getSymbolIcon(result.face.symbol)}
                   </div>
                 </div>
@@ -338,6 +314,10 @@ function GamePage() {
           >
             {isRolling ? '🎲 Rolling...' : '🎲 Roll Dice'}
           </button>
+          <button
+            onClick={resolve}
+            className={`px-6 py-3 rounded-lg font-semibold transition-colors duration-200 flex-1 bg-green-600 hover:bg-green-500`}
+          >Resolve</button>
         </div>
 
         {/* Reference Image */}

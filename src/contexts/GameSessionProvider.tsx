@@ -6,6 +6,7 @@ interface GameSessionContextType {
   gameSessions: Record<number, GameSession>;
   createGameSession: (id: number) => GameSession;
   getGameSession: (id: number) => GameSession | undefined;
+  getHeroAction: (id: number) => string;
   updateGameSession: (id: number, rolls: number) => void;
   updateRoll: (id: number) => void;
 }
@@ -36,12 +37,12 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
         rolls: 3,
         health: 25,
         dice: [
-          {value: 1, symbol: "SWORD"},
-          {value: 2, symbol: "SWORD"},
-          {value: 3, symbol: "BANG"},
-          {value: 4, symbol: "HEART"},
-          {value: 5, symbol: "HEART"},
-          {value: 6, symbol: "BANG"}
+          { value: 1, symbol: "SWORD", textColor: "text-white" },
+          { value: 2, symbol: "SWORD", textColor: "text-white" },
+          { value: 3, symbol: "BANG", textColor: "text-yellow-400" },
+          { value: 4, symbol: "HEART", textColor: "text-red-300" },
+          { value: 5, symbol: "HEART", textColor: "text-red-300" },
+          { value: 6, symbol: "BANG", textColor: "text-yellow-400" }
         ],
         selectedDice: [],
         remainingDice: []
@@ -88,11 +89,11 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
       if (session.hero.rolls > 0) {
         rolls = session.hero.rolls - 1;
 
-        if (rolls === 1) {
+        if (rolls === 0) {
           status = "THIRD_ROLL";
-        } else if (rolls === 2) {
+        } else if (rolls === 1) {
           status = "SECOND_ROLL";
-        } else if (rolls === 3) {
+        } else if (rolls === 2) {
           status = "FIRST_ROLL";
         }
       }
@@ -115,11 +116,21 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
     });
   };
 
-
+  const getHeroAction = (id: number) => {
+    /*
+    TODO: get selected dice
+    - activate the action
+    - deal damage to boss or heal or something else
+    - start next turn
+    */
+    const session = gameSessions[id];
+    return "SMACK";
+  };
 
   const value = {
     gameSessions,
     createGameSession,
+    getHeroAction,
     getGameSession,
     updateGameSession,
     updateRoll
