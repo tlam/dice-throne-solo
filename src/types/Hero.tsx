@@ -1,10 +1,12 @@
+import type { DiceFace } from "./Dice";
+
 export interface Hero {
   name: string;
   status: string;
   rolls: number;
   health: number;
-  dice: any;
-  selectedDice: any;
-  remainingDice: any;
+  dice: DiceFace[];
+  selectedDice: DiceFace[];
+  remainingDice: DiceFace[];
   boardImage: string;
 }

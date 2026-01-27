@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
+import type { DiceFace } from "../types/Dice";
 import type { GameSession } from "../types/GameSession";
 
 interface GameSessionContextType {
@@ -7,7 +8,7 @@ interface GameSessionContextType {
   createGameSession: (id: number) => GameSession;
   getGameSession: (id: number) => GameSession | undefined;
   getHeroAction: (id: number) => string;
-  updateGameSession: (id: number, rolls: number) => void;
+  updateGameSession: (id: number, selectedDice: DiceFace[]) => void;
   updateRoll: (id: number) => void;
 }
 
@@ -60,7 +61,7 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
     return gameSessions[id];
   };
 
-  const updateGameSession = (id: number, rolls: number) => {
+  const updateGameSession = (id: number, selectedDice: []) => {
     setGameSessions(prevSessions => {
       const session = prevSessions[id];
 
@@ -71,7 +72,7 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
             ...session,
             hero: {
               ...session.hero,
-              rolls
+              selectedDice
             }
           }
         }
@@ -124,7 +125,8 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
     - deal damage to boss or heal or something else
     - start next turn
     */
-    //const session = gameSessions[id];
+    const session = gameSessions[id];
+    console.log(session.hero.selectedDice);
     return "SMACK";
   };
 

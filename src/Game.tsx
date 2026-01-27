@@ -1,25 +1,17 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGameSession } from "./contexts/GameSessionProvider";
-
-type DiceSymbol = "SWORD" | "BANG" | "HEART";
-
-export interface DiceFace {
-  value: number;
-  symbol: DiceSymbol;
-  textColor: string;
-}
+import type { DiceFace, DiceSymbol } from "./types/Dice";
 
 interface DiceResult {
   face: DiceFace;
   index: number;
 }
 
-// TODO: Add ability to click on dice that need to be kept
 function GamePage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { getGameSession, getHeroAction, updateRoll } = useGameSession();
+  const { getGameSession, getHeroAction, updateGameSession, updateRoll } = useGameSession();
 
   const gameSession = id ? getGameSession(parseInt(id)) : undefined;
 
@@ -36,6 +28,7 @@ function GamePage() {
   }
 
   const [diceResults, setDiceResults] = useState<DiceResult[]>(initialDice);
+  const [selectedDice, setSelectedDice] = useState<DiceResult[]>([]);
   const [isRolling, setIsRolling] = useState(false);
 
   const rollDice = (): void => {
@@ -45,17 +38,16 @@ function GamePage() {
     
       setIsRolling(true);
     
-      // Roll 5 dice
+      // Roll 5 dice (minus the selected dice)
+      const numDiceToRoll = 5 - selectedDice.length;
       const results: DiceResult[] = [];
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < numDiceToRoll; i++) {
         const randomIndex = Math.floor(Math.random() * 6);
         results.push({
           face: diceFaces[randomIndex],
           index: i
         });
       }
-
-      // Pass results to updateRoll
     
       // Simulate rolling animation
       setTimeout(() => {
@@ -67,16 +59,35 @@ function GamePage() {
     }
   };
 
+  const handleSelectedDice = (diceSelected: DiceResult): void => {
+    if (gameSession && gameSession.hero.status !== "START") {
+      setSelectedDice(prev => [...prev, diceSelected]);
+      setDiceResults(prev => prev.filter(d => d.index !== diceSelected.index));
+
+      const faces = selectedDice.map(dice => dice.face);
+      updateGameSession(gameSession.id, faces);
+    }
+  };
+
+  const handleUnkeepDice = (diceToUnkeep: DiceResult): void => {
+    if (gameSession && gameSession.hero.status !== "START") {    
+      setDiceResults(prev => [...prev, diceToUnkeep]);
+      setSelectedDice(prev => prev.filter(d => d.index !== diceToUnkeep.index));
+
+      const faces = selectedDice.map(dice => dice.face);
+      updateGameSession(gameSession.id, faces);    
+    }
+  };
+
   const resolve = (): void => {
     if (gameSession) {
       getHeroAction(gameSession.id);
     }
-
   };
 
   const getSymbolIcon = (symbol: DiceSymbol)  => {
     switch (symbol) {
-      case 'SWORD':
+      case "SWORD":
         return (
           <svg viewBox="0 0 100 100" className="w-12 h-12">
             <g transform="rotate(-45 50 50)">
@@ -92,7 +103,7 @@ function GamePage() {
             </g>
           </svg>
         );
-      case 'BANG':
+      case "BANG":
         return (
           <svg viewBox="0 0 100 100" className="w-12 h-12">
             <circle cx="50" cy="50" r="20" fill="currentColor" />
@@ -104,7 +115,7 @@ function GamePage() {
             />
           </svg>
         );
-      case 'HEART':
+      case "HEART":
         return (
           <svg viewBox="0 0 100 100" className="w-12 h-12">
             <path
@@ -119,7 +130,7 @@ function GamePage() {
   };
 
   const handleBackHome = (): void => {
-    navigate('/');
+    navigate("/");
   };
 
   if (!gameSession) {
@@ -145,6 +156,9 @@ function GamePage() {
 
   const bossHealthPercentage = (gameSession.bossHealth / 50) * 100;
   const heroHealthPercentage = (gameSession.hero.health / 25) * 100;
+
+  // Combine selected dice and rolled dice for summary
+  const allDice = [...selectedDice, ...diceResults];
 
   return (
     <div className="w-full max-w-[1800px] mx-auto">
@@ -242,18 +256,53 @@ function GamePage() {
           </div>
         </div>
 
-        {/* Dice Roll Area */}
+        {/* Selected Dice Section */}
+        {selectedDice.length > 0 && (
+          <div className="mb-4 bg-gradient-to-br from-green-900 to-green-800 rounded-lg p-4 border border-green-600">
+            <h3 className="text-xl font-bold mb-4 text-center">Selected Dice</h3>
+            <div className="flex justify-center gap-4 flex-wrap">
+              {selectedDice.map((result) => (
+                <div
+                  key={result.index}
+                  onClick={() => handleUnkeepDice(result)}
+                  className={`relative w-28 h-28 rounded-xl 
+                    shadow-lg
+                    transition-all duration-300 
+                    hover:scale-105 cursor-pointer
+                    border-2 border-green-400`}
+                  style={{
+                    backgroundColor: 'oklch(50.5% 0.213 27.518)',
+                    boxShadow: '0 8px 16px rgba(0,0,0,0.3), inset 0 -2px 8px rgba(0,0,0,0.1), inset 0 2px 8px rgba(255,255,255,0.1)'
+                  }}
+                >
+                  {/* Value in top left */}
+                  <div className={`absolute top-2 left-2 text-2xl font-bold ${result.face.textColor}`}>
+                    {result.face.value}
+                  </div>
+                  
+                  {/* Symbol in bottom right */}
+                  <div className={`absolute bottom-1 right-1 ${result.face.textColor} drop-shadow-md`}>
+                    {getSymbolIcon(result.face.symbol)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Rolled Dice Section */}
         {diceResults.length > 0 && (
           <div className="mb-4 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg p-4 border border-slate-700">
-            <h3 className="text-xl font-bold mb-4 text-center">Dice Results</h3>
+            <h3 className="text-xl font-bold mb-4 text-center">Rolled Dice (Click to Select)</h3>
             <div className="flex justify-center gap-4 flex-wrap">
               {diceResults.map((result) => (
                 <div
                   key={result.index}
+                  onClick={() => handleSelectedDice(result)}
                   className={`relative w-28 h-28 rounded-xl 
                     shadow-lg
                     transition-all duration-300 
-                    ${isRolling ? 'animate-spin' : 'hover:scale-105'}
+                    ${isRolling ? 'animate-spin' : 'hover:scale-105 cursor-pointer'}
                     border-2 border-orange-900`}
                   style={{
                     backgroundColor: 'oklch(50.5% 0.213 27.518)',
@@ -283,7 +332,7 @@ function GamePage() {
                 </div>
                 <span className="text-slate-400">Swords:</span>
                 <span className="font-bold text-white text-lg">
-                  {diceResults.filter(r => r.face.symbol === 'SWORD').length}
+                  {allDice.filter(r => r.face.symbol === 'SWORD').length}
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -294,7 +343,7 @@ function GamePage() {
                 </div>
                 <span className="text-slate-400">Bangs:</span>
                 <span className="font-bold text-yellow-400 text-lg">
-                  {diceResults.filter(r => r.face.symbol === 'BANG').length}
+                  {allDice.filter(r => r.face.symbol === 'BANG').length}
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -305,7 +354,7 @@ function GamePage() {
                 </div>
                 <span className="text-slate-400">Hearts:</span>
                 <span className="font-bold text-red-300 text-lg">
-                  {diceResults.filter(r => r.face.symbol === 'HEART').length}
+                  {allDice.filter(r => r.face.symbol === 'HEART').length}
                 </span>
               </div>
             </div>
