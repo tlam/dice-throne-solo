@@ -6,4 +6,5 @@ export interface Hero {
   dice: any;
   selectedDice: any;
   remainingDice: any;
+  boardImage: string;
 }

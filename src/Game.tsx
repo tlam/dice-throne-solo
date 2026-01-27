@@ -15,13 +15,27 @@ interface DiceResult {
   index: number;
 }
 
+// TODO: Add ability to click on dice that need to be kept
 function GamePage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { getGameSession, getHeroAction, updateRoll } = useGameSession();
 
   const gameSession = id ? getGameSession(parseInt(id)) : undefined;
-  const [diceResults, setDiceResults] = useState<DiceResult[]>([]);
+
+  const initialDice: DiceResult[] = [];
+  if (gameSession) {
+    const dice = gameSession.hero.dice;
+
+    for (let i: number = 0; i < dice.length - 1; i++) {
+      initialDice.push({
+        face: dice[i],
+        index: i
+      });
+    }
+  }
+
+  const [diceResults, setDiceResults] = useState<DiceResult[]>(initialDice);
   const [isRolling, setIsRolling] = useState(false);
 
   const rollDice = (): void => {
@@ -40,6 +54,8 @@ function GamePage() {
           index: i
         });
       }
+
+      // Pass results to updateRoll
     
       // Simulate rolling animation
       setTimeout(() => {
@@ -323,7 +339,7 @@ function GamePage() {
         {/* Reference Image */}
         <div>
           <img 
-            src="https://cdn.shopify.com/s/files/1/0045/4013/7562/t/9/assets/a716b64ef4a9--5.component-spread-barbarian-829552.png?v=1601922898"
+            src={gameSession.hero.boardImage}
             alt="Barbarian dice reference"
             className="w-full rounded-lg shadow-lg"
           />

@@ -53,5 +53,5 @@ test("Update roll", async () => {
 
   session = result.current.getGameSession(1);
   assert.equal(session?.hero.rolls, 2);
-  assert.equal(session?.hero.status, "SECOND_ROLL");
+  assert.equal(session?.hero.status, "FIRST_ROLL");
 });

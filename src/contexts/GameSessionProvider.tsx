@@ -45,7 +45,8 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
           { value: 6, symbol: "BANG", textColor: "text-yellow-400" }
         ],
         selectedDice: [],
-        remainingDice: []
+        remainingDice: [],
+        boardImage: "https://cdn.shopify.com/s/files/1/0045/4013/7562/t/9/assets/a716b64ef4a9--5.component-spread-barbarian-829552.png?v=1601922898",
       }
     };
     setGameSessions(prev => ({
@@ -123,7 +124,7 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
     - deal damage to boss or heal or something else
     - start next turn
     */
-    const session = gameSessions[id];
+    //const session = gameSessions[id];
     return "SMACK";
   };
 
