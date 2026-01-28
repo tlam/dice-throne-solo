@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { GameSessionProvider } from './contexts/GameSessionProvider';
-import HomePage from "./Home";
 import GamePage from "./Game";
+import HomePage from "./Home";
 
 function App() {
   return (
