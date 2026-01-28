@@ -1,7 +1,13 @@
-export type DiceSymbol = "SWORD" | "BANG" | "HEART";
+//export type DiceSymbol = "SWORD" | "BANG" | "HEART";
 
 export interface DiceFace {
   value: number;
-  symbol: DiceSymbol;
+  symbol: string;
   textColor: string;
+}
+
+export interface DiceAction {
+  numbers: Map<string, number>;
+  isLargeStraight: boolean;
+  isSmallStraight: boolean;
 }

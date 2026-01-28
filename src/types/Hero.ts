@@ -9,4 +9,5 @@ export interface Hero {
   selectedDice: DiceFace[];
   remainingDice: DiceFace[];
   boardImage: string;
+  symbols: string[];
 }

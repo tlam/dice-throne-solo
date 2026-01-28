@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
 import { BARBARIAN } from "../constants/heroes";
-import type { DiceFace } from "../types/Dice";
+import type { DiceAction, DiceFace } from "../types/Dice";
 import type { GameSession } from "../types/GameSession";
 
 interface GameSessionContextType {
@@ -106,13 +106,19 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
   const getHeroAction = (id: number) => {
     /*
     TODO: get selected dice
-    - activate the action
+    - get matching hero abilities
     - deal damage to boss or heal or something else
     - start next turn
+
+    1,2,3,4,5
+    2,3,4,5,6
+
+    1,2,3,4
+    2,3,4,5
+    3,4,5,6
     */
-    const session = gameSessions[id];
-    console.log(session.hero.selectedDice);
-    return "SMACK";
+
+    return "SMACK"
   };
 
   const value = {

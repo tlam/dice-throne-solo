@@ -16,6 +16,7 @@ export const BARBARIAN: Hero = {
   selectedDice: [],
   remainingDice: [],
   boardImage: "https://cdn.shopify.com/s/files/1/0045/4013/7562/t/9/assets/a716b64ef4a9--5.component-spread-barbarian-829552.png?v=1601922898",
+  symbols: ["BANG", "HEART", "SWORD"],
 };
 
 export const HEROES = {
