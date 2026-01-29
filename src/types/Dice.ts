@@ -6,7 +6,7 @@ export interface DiceFace {
   textColor: string;
 }
 
-export interface DiceAction {
+export interface DiceOutcome {
   numbers: Map<string, number>;
   isLargeStraight: boolean;
   isSmallStraight: boolean;

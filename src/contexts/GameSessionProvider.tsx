@@ -110,12 +110,9 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
     - deal damage to boss or heal or something else
     - start next turn
 
-    1,2,3,4,5
-    2,3,4,5,6
 
-    1,2,3,4
-    2,3,4,5
-    3,4,5,6
+    - After each roll, display possible actions
+    - before resolve is clicked, ensure only one action is selected
     */
 
     return "SMACK"

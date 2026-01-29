@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { assert, test } from "vitest";
+import { expect, test } from "vitest";
 import { renderHook } from "@testing-library/react";
 import { GameSessionProvider, useGameSession } from "./GameSessionProvider";
 import type { DiceFace } from "../types/Dice";
@@ -17,7 +17,7 @@ test("Create game session", async () => {
   })
 
   const session = result.current.getGameSession(1);
-  assert.equal(session?.hero.rolls, 3);
+  expect(session?.hero.rolls).toEqual(3);
 });
 
 test("Update game session", async () => {
@@ -28,7 +28,7 @@ test("Update game session", async () => {
   });
 
   let session = result.current.getGameSession(1);
-  assert.equal(session?.hero.rolls, 3);
+  expect(session?.hero.rolls).toEqual(3);
 
   const face: DiceFace = {value: 1, symbol: "SWORD", textColor: "red"};
   act(() => {
@@ -36,7 +36,7 @@ test("Update game session", async () => {
   });
 
   session = result.current.getGameSession(1);
-  assert.equal(session?.hero.selectedDice[0], face);
+  expect(session?.hero.selectedDice[0]).toEqual(face);
 });
 
 test("Update roll", async () => {
@@ -47,13 +47,13 @@ test("Update roll", async () => {
   });
 
   let session = result.current.getGameSession(1);
-  assert.equal(session?.hero.rolls, 3);
+  expect(session?.hero.rolls).toEqual(3);
 
   act(() => {
     result.current.updateRoll(1);
   });
 
   session = result.current.getGameSession(1);
-  assert.equal(session?.hero.rolls, 2);
-  assert.equal(session?.hero.status, "FIRST_ROLL");
+  expect(session?.hero.rolls).toEqual(2);
+  expect(session?.hero.status).toEqual("FIRST_ROLL");
 });
