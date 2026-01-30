@@ -1,14 +1,15 @@
 import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
 import { BARBARIAN } from "../constants/heroes";
-import type { DiceAction, DiceFace } from "../types/Dice";
+import { heroOutcome } from "../features/ability";
+import type { DiceFace } from "../types/Dice";
 import type { GameSession } from "../types/GameSession";
 
 interface GameSessionContextType {
   gameSessions: Record<number, GameSession>;
+  activatetHeroAction: (id: number) => string;
   createGameSession: (id: number) => GameSession;
   getGameSession: (id: number) => GameSession | undefined;
-  getHeroAction: (id: number) => string;
   updateGameSession: (id: number, selectedDice: DiceFace[]) => void;
   updateRoll: (id: number) => void;
 }
@@ -46,9 +47,10 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
     return gameSessions[id];
   };
 
-  const updateGameSession = (id: number, selectedDice: []) => {
+  const updateGameSession = (id: number, selectedDice: DiceFace[]) => {
     setGameSessions(prevSessions => {
       const session = prevSessions[id];
+      const outcome = heroOutcome(session.hero, selectedDice);
 
       if (session) {
         return {
@@ -57,7 +59,8 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
             ...session,
             hero: {
               ...session.hero,
-              selectedDice
+              selectedDice,
+              outcome
             }
           }
         }
@@ -103,16 +106,13 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const getHeroAction = (id: number) => {
+  const activatetHeroAction = (id: number) => {
     /*
-    TODO: get selected dice
-    - get matching hero abilities
+    TODO:
+    - check selected hero outcome
+    - if none, continue to next turn
     - deal damage to boss or heal or something else
     - start next turn
-
-
-    - After each roll, display possible actions
-    - before resolve is clicked, ensure only one action is selected
     */
 
     return "SMACK"
@@ -120,8 +120,8 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
 
   const value = {
     gameSessions,
+    activatetHeroAction,
     createGameSession,
-    getHeroAction,
     getGameSession,
     updateGameSession,
     updateRoll

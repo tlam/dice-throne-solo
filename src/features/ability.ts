@@ -1,7 +1,7 @@
 import type { DiceOutcome, DiceFace } from "../types/Dice";
 import type { Hero } from "../types/Hero";
 
-export function barbarianActions(outcome: DiceOutcome) {
+export function barbarianActions(outcome: DiceOutcome): string[] {
   /*
 
      BARBARIAN
@@ -38,7 +38,7 @@ export function barbarianActions(outcome: DiceOutcome) {
    - 5 bangs: 15 dmg + stun
    */
 
-  let actions = [];
+  let actions: string[] = [];
 
   if (outcome.isLargeStraight) {
     actions.push("RECKLESS");
@@ -89,21 +89,7 @@ export function barbarianActions(outcome: DiceOutcome) {
   return actions;
 }
 
-export function diceAction(dice: DiceFace[]) {
-  /*
-    TODO: get selected dice
-    - activate the action
-    - deal damage to boss or heal or something else
-    - start next turn
-
-    1,2,3,4,5
-    2,3,4,5,6
-
-    1,2,3,4
-    2,3,4,5
-    3,4,5,6
-  */
-
+export function diceAction(dice: DiceFace[]): DiceOutcome {
   let actions = new Map<string, number>();
   let sequence: number[] = [];
 
@@ -134,16 +120,11 @@ export function diceAction(dice: DiceFace[]) {
   return outcome;
 };
 
-export function heroAbilities(hero: Hero, dice: DiceFace[]) {
-  /*
-   return a list of possible hero abilities based on the dice roll
+export function heroOutcome(hero: Hero, dice: DiceFace[]): string[] {
+  const outcome: DiceOutcome = diceAction(dice);
 
-
-
-
-   features/abilities
-     barbarian.ts, match and return a new type with dmg, heal, effects and own damage
-
-
-   */
+  if (hero.name === "Barbarian") {
+    return barbarianActions(outcome);
+  }
+  return [];
 };

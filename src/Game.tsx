@@ -12,7 +12,7 @@ interface DiceResult {
 function GamePage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { getGameSession, getHeroAction, updateGameSession, updateRoll } = useGameSession();
+  const { activatetHeroAction, getGameSession, updateGameSession, updateRoll } = useGameSession();
 
   const gameSession = id ? getGameSession(parseInt(id)) : undefined;
 
@@ -70,7 +70,7 @@ function GamePage() {
       setSelectedDice(prev => [...prev, diceSelected]);
       setDiceResults(prev => prev.filter(d => d.index !== diceSelected.index));
 
-      const faces = newSelectedDice.map(dice => dice.face);
+      const faces: DiceFace[] = newSelectedDice.map(dice => dice.face);
       updateGameSession(gameSession.id, faces);
     }
   };
@@ -89,7 +89,7 @@ function GamePage() {
 
   const resolve = (): void => {
     if (gameSession) {
-      getHeroAction(gameSession.id);
+      activatetHeroAction(gameSession.id);
     }
   };
 
@@ -251,6 +251,30 @@ function GamePage() {
                 </div>
               ))}
             </div>
+            {gameSession.hero.outcome.length > 0 && (
+            <div className="flex justify-center gap-4 flex-wrap mt-4">
+              {gameSession.hero.outcome.map((option, index) => (
+              <div 
+                key={index}
+                className="flex items-center px-4 py-2 border border-slate-600 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors cursor-pointer"
+              >
+                <input 
+                  id={`outcome-${index}`}
+                  type="radio" 
+                  value={option} 
+                  name="hero-outcome" 
+                  className="w-4 h-4 text-green-500 border-slate-500 bg-slate-800 focus:ring-2 focus:ring-green-400 cursor-pointer"
+                />
+                <label 
+                  htmlFor={`outcome-${index}`}
+                  className="ml-2 text-sm font-medium text-white select-none cursor-pointer"
+                >
+                  {option}
+                </label>
+              </div>
+              ))}
+            </div>
+            )}
           </div>
         )}
 
