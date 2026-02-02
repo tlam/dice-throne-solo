@@ -14,6 +14,8 @@ export interface Hero {
   rolls: number;
   health: number;
   dice: DiceFace[];
+  diceBorderColor: string;
+  diceColor: string;
   selectedDice: DiceFace[];
   remainingDice: DiceFace[];
   boardImage: string;

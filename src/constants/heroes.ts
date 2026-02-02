@@ -15,6 +15,8 @@ export const BARBARIAN: Hero = {
     { value: 5, symbol: "HEART", textColor: "text-red-300" },
     { value: 6, symbol: "BANG", textColor: "text-yellow-400" }
   ],
+  diceBorderColor: "border-orange-900",
+  diceColor: "oklch(50.5% 0.213 27.518)",
   selectedDice: [],
   remainingDice: [],
   boardImage: "https://cdn.shopify.com/s/files/1/0045/4013/7562/t/9/assets/a716b64ef4a9--5.component-spread-barbarian-829552.png?v=1601922898",
@@ -49,6 +51,8 @@ export const MOON_ELF: Hero = {
     { value: 5, symbol: "HEART", textColor: "text-red-300" },
     { value: 6, symbol: "BANG", textColor: "text-yellow-400" }
   ],
+  diceBorderColor: "border-blue-900",
+  diceColor: "oklch(0.3735 0.148 288)",
   selectedDice: [],
   remainingDice: [],
   boardImage: "https://cdn.shopify.com/s/files/1/0045/4013/7562/t/9/assets/a716b64ef4a9--5.component-spread-4f2283.png?v=1602727498",

@@ -9,7 +9,7 @@ import type { GameSession } from "../types/GameSession";
 interface GameSessionContextType {
   gameSessions: Record<number, GameSession>;
   activateHeroAction: (id: number, selectedOutcome: string) => void;
-  createGameSession: (id: number, hero: string) => GameSession;
+  createGameSession: (id: number, hero: HeroType) => GameSession;
   getGameSession: (id: number) => GameSession | undefined;
   updateGameSession: (id: number, selectedDice: DiceFace[]) => void;
   updateRoll: (id: number) => void;

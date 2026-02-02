@@ -262,7 +262,7 @@ function GamePage() {
                     hover:scale-105 cursor-pointer
                     border-2 border-green-400`}
                   style={{
-                    backgroundColor: 'oklch(50.5% 0.213 27.518)',
+                    backgroundColor: gameSession.hero.diceColor,
                     boxShadow: '0 8px 16px rgba(0,0,0,0.3), inset 0 -2px 8px rgba(0,0,0,0.1), inset 0 2px 8px rgba(255,255,255,0.1)'
                   }}
                 >
@@ -320,9 +320,9 @@ function GamePage() {
                     shadow-lg
                     transition-all duration-300 
                     ${isRolling ? 'animate-spin' : 'hover:scale-105 cursor-pointer'}
-                    border-2 border-orange-900`}
+                    border-2 ${gameSession.hero.diceBorderColor}`}
                   style={{
-                    backgroundColor: 'oklch(50.5% 0.213 27.518)',
+                    backgroundColor: gameSession.hero.diceColor,
                     boxShadow: '0 8px 16px rgba(0,0,0,0.3), inset 0 -2px 8px rgba(0,0,0,0.1), inset 0 2px 8px rgba(255,255,255,0.1)'
                   }}
                 >

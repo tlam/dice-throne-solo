@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameSession } from "./contexts/GameSessionProvider";
 import { HEROES } from "./constants/heroes";
+import type { HeroType } from "./constants/heroes";
 
 function HomePage() {
   const navigate = useNavigate();
   const { createGameSession } = useGameSession();
-  const [selectedHero, setSelectedHero] = useState<string | null>(null);
+  const [selectedHero, setSelectedHero] = useState<HeroType | null>(null);
 
   const handleStart = (): void => {
     if (selectedHero) {
@@ -30,7 +31,7 @@ function HomePage() {
           {Object.entries(HEROES).map(([heroType, hero]) => (
             <div
               key={heroType}
-              onClick={() => setSelectedHero(heroType)}
+              onClick={() => setSelectedHero(heroType as HeroType)}
               className={`
                 border-4 rounded-lg p-6 cursor-pointer transition-all duration-200
                 ${selectedHero === heroType 
