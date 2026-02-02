@@ -2,42 +2,6 @@ import type { DiceOutcome, DiceFace } from "../types/Dice";
 import type { Hero } from "../types/Hero";
 
 export function barbarianActions(outcome: DiceOutcome): string[] {
-  /*
-
-     BARBARIAN
-
-   SMACK
-   - 3 swords: 4 dmg
-   - 4 swords: 6 dmg
-   - 5 swords: 7 dmg
-
-   STURDY BLOW
-   - 2 swords, 2 bangs: 4 dmg
-
-   FORTITUDE
-   - 3 hearts: heal 4
-   - 4 hearts: heal 5
-   - 5 hearts: heal 6
-
-   OVERPOWER
-   - 3 swords, 2 bangs: roll another 3, total value is damage
-
-   MIGHTY BLOW
-   - small straight: 9 dmg
-
-   CRIT BASH
-   - 4 bangs: 5 dmg + stun
-
-   RECKLESS
-   - large straight: 15 dmg, take 4 dmg
-
-   THICK SKIN
-   - roll 3 to heal 2 per heart
-
-   RAGE (ULTIMATE)
-   - 5 bangs: 15 dmg + stun
-   */
-
   let actions: string[] = [];
 
   if (outcome.isLargeStraight) {

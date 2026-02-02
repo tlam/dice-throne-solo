@@ -7,7 +7,7 @@ import type { GameSession } from "../types/GameSession";
 
 interface GameSessionContextType {
   gameSessions: Record<number, GameSession>;
-  activatetHeroAction: (id: number) => string;
+  activateHeroAction: (id: number, selectedOutcome: string) => void;
   createGameSession: (id: number) => GameSession;
   getGameSession: (id: number) => GameSession | undefined;
   updateGameSession: (id: number, selectedDice: DiceFace[]) => void;
@@ -106,21 +106,21 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const activatetHeroAction = (id: number) => {
-    /*
-    TODO:
-    - check selected hero outcome
-    - if none, continue to next turn
-    - deal damage to boss or heal or something else
-    - start next turn
-    */
+  const activateHeroAction = (id: number, selectedOutcome: string) => {
+    const session = gameSessions[id];
+    const ability = session.hero.abilities[selectedOutcome];
 
-    return "SMACK"
+    session.bossHealth -= ability.damage;
+    session.hero.health -= ability.selfDamage;
+    session.hero.health += ability.heal;
+    session.hero.status = "START";
+    session.hero.rolls = 3;
+    session.turn += 1;
   };
 
   const value = {
     gameSessions,
-    activatetHeroAction,
+    activateHeroAction,
     createGameSession,
     getGameSession,
     updateGameSession,

@@ -12,7 +12,7 @@ interface DiceResult {
 function GamePage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { activatetHeroAction, getGameSession, updateGameSession, updateRoll } = useGameSession();
+  const { activateHeroAction, getGameSession, updateGameSession, updateRoll } = useGameSession();
 
   const gameSession = id ? getGameSession(parseInt(id)) : undefined;
 
@@ -31,6 +31,8 @@ function GamePage() {
   const [diceResults, setDiceResults] = useState<DiceResult[]>(initialDice);
   const [selectedDice, setSelectedDice] = useState<DiceResult[]>([]);
   const [isRolling, setIsRolling] = useState(false);
+  const [selectedOutcome, setSelectedOutcome] = useState<string>("");
+  const [showAlert, setShowAlert] = useState(false);
 
   const rollDice = (): void => {
     if (gameSession && gameSession?.hero.rolls > 0) {
@@ -87,9 +89,25 @@ function GamePage() {
     }
   };
 
+  const handleOutcomeChange = (outcome: string): void => {
+    setSelectedOutcome(outcome);
+    setShowAlert(false); // Hide alert when user selects an outcome
+  };
+
   const resolve = (): void => {
     if (gameSession) {
-      activatetHeroAction(gameSession.id);
+      if (gameSession.hero.outcome.length > 0 && !selectedOutcome) {
+        setShowAlert(true);
+        // Scroll to top to show alert
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      
+      activateHeroAction(gameSession.id, selectedOutcome);
+      setShowAlert(false);
+      setDiceResults(initialDice);
+      setSelectedDice([]);
+      setSelectedOutcome("");
     }
   };
 
@@ -127,6 +145,29 @@ function GamePage() {
   return (
     <div className="w-full max-w-[1800px] mx-auto">
       <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl shadow-2xl p-2 text-white">
+        
+        {/* Alert Message */}
+        {showAlert && (
+          <div className="mb-4 bg-red-900 border-2 border-red-500 rounded-lg p-4 flex items-center justify-between animate-pulse">
+            <div className="flex items-center gap-3">
+              <svg className="w-6 h-6 text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <span className="text-lg font-semibold text-red-100">
+                Please select an outcome option before resolving!
+              </span>
+            </div>
+            <button
+              onClick={() => setShowAlert(false)}
+              className="text-red-300 hover:text-red-100 transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        )}
+
         {/* Header */}
         <div className="flex justify-between items-center mb-2 pb-2 border-b border-slate-700">
           <div>
@@ -262,7 +303,9 @@ function GamePage() {
                   id={`outcome-${index}`}
                   type="radio" 
                   value={option} 
-                  name="hero-outcome" 
+                  name="hero-outcome"
+                  checked={selectedOutcome === option}
+                  onChange={() => handleOutcomeChange(option)}
                   className="w-4 h-4 text-green-500 border-slate-500 bg-slate-800 focus:ring-2 focus:ring-green-400 cursor-pointer"
                 />
                 <label 

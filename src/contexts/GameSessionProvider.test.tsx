@@ -57,3 +57,17 @@ test("Update roll", async () => {
   expect(session?.hero.rolls).toEqual(2);
   expect(session?.hero.status).toEqual("FIRST_ROLL");
 });
+
+test("Activate hero action", async () => {
+  const { result } = renderHook(() => useGameSession(), { wrapper });
+
+  act(() => {
+    result.current.createGameSession(1);
+  });
+
+  let session = result.current.getGameSession(1);
+  expect(session?.bossHealth).toEqual(50);
+
+  result.current.activateHeroAction(1, "SMACK_1");
+  expect(session?.bossHealth).toEqual(46);
+});
