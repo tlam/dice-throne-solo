@@ -68,6 +68,10 @@ test("Activate hero action", async () => {
   let session = result.current.getGameSession(1);
   expect(session?.bossHealth).toEqual(50);
 
-  result.current.activateHeroAction(1, "SMACK_1");
+  act(() => {
+    result.current.activateHeroAction(1, "SMACK_1");
+  });
+
+  session = result.current.getGameSession(1);
   expect(session?.bossHealth).toEqual(46);
 });

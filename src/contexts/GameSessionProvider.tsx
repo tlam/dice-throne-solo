@@ -107,15 +107,36 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
   };
 
   const activateHeroAction = (id: number, selectedOutcome: string) => {
-    const session = gameSessions[id];
-    const ability = session.hero.abilities[selectedOutcome];
+    setGameSessions(prevSessions => {
+      const session = prevSessions[id];
+    
+      if (!session) {
+        return prevSessions;
+      }
+    
+      const ability = session.hero.abilities[selectedOutcome];
+    
+      if (!ability) {
+        return prevSessions;
+      }
 
-    session.bossHealth -= ability.damage;
-    session.hero.health -= ability.selfDamage;
-    session.hero.health += ability.heal;
-    session.hero.status = "START";
-    session.hero.rolls = 3;
-    session.turn += 1;
+      return {
+        ...prevSessions,
+        [id]: {
+          ...session,
+          bossHealth: session.bossHealth - ability.damage,
+          turn: session.turn + 1,
+          hero: {
+            ...session.hero,
+            health: session.hero.health - ability.selfDamage + ability.heal,
+            status: "START",
+            rolls: 3,
+            selectedDice: [],
+            outcome: []
+          }
+        }
+      };
+    });
   };
 
   const value = {

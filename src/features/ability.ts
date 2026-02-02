@@ -2,7 +2,7 @@ import type { DiceOutcome, DiceFace } from "../types/Dice";
 import type { Hero } from "../types/Hero";
 
 export function barbarianActions(outcome: DiceOutcome): string[] {
-  let actions: string[] = [];
+  const actions: string[] = [];
 
   if (outcome.isLargeStraight) {
     actions.push("RECKLESS");
@@ -54,10 +54,10 @@ export function barbarianActions(outcome: DiceOutcome): string[] {
 }
 
 export function diceAction(dice: DiceFace[]): DiceOutcome {
-  let actions = new Map<string, number>();
+  const actions = new Map<string, number>();
   let sequence: number[] = [];
 
-  for (let die of dice) {
+  for (const die of dice) {
     sequence.push(die.value);
     const value = actions.get(die.symbol);
 
@@ -70,12 +70,12 @@ export function diceAction(dice: DiceFace[]): DiceOutcome {
 
   sequence.sort()
   sequence = [...new Set(sequence)];
-  let sequenceString: string = sequence.join("");
+  const sequenceString: string = sequence.join("");
 
   const isLargeStraight: boolean = sequenceString === "12345" || sequenceString === "23456";
   const isSmallStraight: boolean = sequenceString === "1234" || sequenceString === "2345" || sequenceString === "3456";
 
-  let outcome: DiceOutcome = {
+  const outcome: DiceOutcome = {
     numbers: actions,
     isLargeStraight: isLargeStraight,
     isSmallStraight: isSmallStraight
