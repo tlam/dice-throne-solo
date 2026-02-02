@@ -17,6 +17,7 @@ export interface Hero {
   selectedDice: DiceFace[];
   remainingDice: DiceFace[];
   boardImage: string;
+  portraitImage: string;
   symbols: string[];
   outcome: string[];
   abilities: Record<string, HeroAbility>; 

@@ -53,7 +53,7 @@ function GamePage() {
         const randomIndex = Math.floor(Math.random() * 6);
         results.push({
           face: diceFaces[randomIndex],
-          index: baseIndex + i  // ← Unique index
+          index: baseIndex + i
         });
       }
   
@@ -404,9 +404,9 @@ function GamePage() {
 
         {/* Reference Image */}
         <div>
-          <img 
+          <img
             src={gameSession.hero.boardImage}
-            alt="Barbarian dice reference"
+            alt={`${gameSession.hero.name} dice reference`}
             className="w-full rounded-lg shadow-lg"
           />
         </div>

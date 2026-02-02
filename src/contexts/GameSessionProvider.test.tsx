@@ -13,7 +13,7 @@ test("Create game session", async () => {
   const { result } = renderHook(() => useGameSession(), { wrapper });
 
   act(() => {
-    result.current.createGameSession(1);
+    result.current.createGameSession(1, "BARBARIAN");
   })
 
   const session = result.current.getGameSession(1);
@@ -24,7 +24,7 @@ test("Update game session", async () => {
   const { result } = renderHook(() => useGameSession(), { wrapper });
 
   act(() => {
-    result.current.createGameSession(1);
+    result.current.createGameSession(1, "BARBARIAN");
   });
 
   let session = result.current.getGameSession(1);
@@ -43,7 +43,7 @@ test("Update roll", async () => {
   const { result } = renderHook(() => useGameSession(), { wrapper });
 
   act(() => {
-    result.current.createGameSession(1);
+    result.current.createGameSession(1, "BARBARIAN");
   });
 
   let session = result.current.getGameSession(1);
@@ -62,7 +62,7 @@ test("Activate hero action", async () => {
   const { result } = renderHook(() => useGameSession(), { wrapper });
 
   act(() => {
-    result.current.createGameSession(1);
+    result.current.createGameSession(1, "BARBARIAN");
   });
 
   let session = result.current.getGameSession(1);

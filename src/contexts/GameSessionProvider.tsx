@@ -1,14 +1,15 @@
 import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
-import { BARBARIAN } from "../constants/heroes";
+import { HEROES } from "../constants/heroes";
 import { heroOutcome } from "../features/ability";
+import type { HeroType } from "../constants/heroes";
 import type { DiceFace } from "../types/Dice";
 import type { GameSession } from "../types/GameSession";
 
 interface GameSessionContextType {
   gameSessions: Record<number, GameSession>;
   activateHeroAction: (id: number, selectedOutcome: string) => void;
-  createGameSession: (id: number) => GameSession;
+  createGameSession: (id: number, hero: string) => GameSession;
   getGameSession: (id: number) => GameSession | undefined;
   updateGameSession: (id: number, selectedDice: DiceFace[]) => void;
   updateRoll: (id: number) => void;
@@ -27,14 +28,14 @@ export const useGameSession = () => {
 export function GameSessionProvider({ children }: { children: ReactNode }) {
   const [gameSessions, setGameSessions] = useState<Record<number, GameSession>>({});
 
-  const createGameSession = (id: number): GameSession => {
+  const createGameSession = (id: number, hero: HeroType): GameSession => {
     const newSession: GameSession = {
       id: 1,
       turn: 1,
       status: "CREATED",
       bossName: "ZeBoss",
       bossHealth: 50,
-      hero: BARBARIAN,
+      hero: HEROES[hero],
     };
     setGameSessions(prev => ({
       ...prev,
